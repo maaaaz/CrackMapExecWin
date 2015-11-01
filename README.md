@@ -3,7 +3,7 @@ CrackMapExecWin
 
 Description
 -----------
-The great CrackMapExec tool compiled for Windows
+The great `CrackMapExec` tool compiled for Windows
 
 Features
 --------
@@ -13,7 +13,7 @@ Features
 
 Usage
 -----
-1. Download the [whole archive](https://github.com/maaaaz/CrackMapExecWin/archive/master.zip)
+1. Download the [whole archive](https://github.com/maaaaz/CrackMapExecWin/releases/download/v1.0.9/CrackMapExecWin_v1.0.9.zip)
 2. Extract it and run `crackmapexecwin.exe`
 3. Profit
 
