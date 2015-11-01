@@ -26,7 +26,7 @@ Older versions
 Disclaimer & licence 
 ---------------------
 * Do not use it for illegal purposes
-* I don't own anything on CrackMapExec brand
+* I don't own anything on the CrackMapExec brand
 * Last but not least, antivirus softwares might report some binaries as hacktools or even malwares: this is a known and common issue. If you don't trust this compilation: 
   1. Just don't download it.
   2. Compile it yourself with [that tutorial](https://github.com/maaaaz/CrackMapExecWin/wiki/How-to-compile-CrackMapExec-for-Windows) and the provided source file in the `_src` folder
