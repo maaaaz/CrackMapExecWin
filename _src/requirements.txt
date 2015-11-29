@@ -1,7 +1,0 @@
-git+git://github.com/CoreSecurity/impacket
-gevent
-netaddr
-pycrypto
-pyasn1
-termcolor
-colorama

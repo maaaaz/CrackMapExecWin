@@ -7,13 +7,13 @@ The great `CrackMapExec` tool compiled for Windows
 
 Features
 --------
-* Latest `1.0.9` version
+* Latest `2.1` version
 * Compiled for `x86` so should work on `x86` and `x64` platforms
  
 
 Usage
 -----
-1. Download the [whole archive](https://github.com/maaaaz/CrackMapExecWin/releases/download/v1.0.9.1/CrackMapExecWin_v1.0.9.1.zip)
+1. Download the [whole archive](https://github.com/maaaaz/CrackMapExecWin/releases/download/v2.1/CrackMapExecWin_v2.1.zip)
 2. Extract it and run `crackmapexecwin.exe`
 3. Profit
 
